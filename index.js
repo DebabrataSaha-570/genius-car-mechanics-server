@@ -13,16 +13,28 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         await client.connect();
-        //   const database = client.db("insertDB");
-        //   const haiku = database.collection("haiku");
+        const database = client.db("carMechanic");
+        const servicesCollection = database.collection("services");
         console.log('database connected ')
-        // create a document to insert
-        //   const doc = {
+
+        //POST API 
+        app.post('/services', async (req, res) => {
+            const service = {
+                "name": "Replace Tire",
+                "price": 200,
+                "time": 2,
+                "img": "https://i.ibb.co/WgXS2FS/Car-wash-detailing-station.jpg"
+            }
+            const result = await servicesCollection.insertOne(service);
+            console.log(`A document was inserted with the _id: ${result.insertedId}`);
+        })
+
+        // const doc = {
         //     title: "Record of a Shriveled Datum",
         //     content: "No bytes, no problem. Just insert a document, in MongoDB",
-        //   }
-        //   const result = await haiku.insertOne(doc);
-        //   console.log(`A document was inserted with the _id: ${result.insertedId}`);
+        // }
+        // const result = await servicesCollection.insertOne(doc);
+        // console.log(`A document was inserted with the _id: ${result.insertedId}`);
     } finally {
         //   await client.close();
     }
