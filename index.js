@@ -1,5 +1,6 @@
 const express = require('express')
 const { MongoClient } = require('mongodb');
+const ObjectId = require('mongodb').ObjectId
 const cors = require('cors')
 require('dotenv').config()
 
@@ -29,6 +30,31 @@ async function run() {
             const result = await servicesCollection.insertOne(service);
             res.json(result)
             console.log(`A document was inserted with the _id: ${result.insertedId}`);
+        })
+
+        //get API
+        app.get('/services', async (req, res) => {
+            const cursor = servicesCollection.find({})
+            const result = await cursor.toArray()
+            // console.log(result)
+            res.json(result)
+        })
+        //get single service 
+        app.get('/services/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: ObjectId(id) }
+            const service = await servicesCollection.findOne(query)
+            console.log(service)
+            res.json(service)
+        })
+
+        //delete API
+        app.delete('/services/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: ObjectId(id) }
+            const result = await servicesCollection.deleteOne(query)
+            console.log(result)
+            res.json(result)
         })
 
 
